@@ -1,8 +1,5 @@
-import sequelize from "../db/index.js";
 import { DateResolver } from "graphql-scalars";
-
-const Book = sequelize.models.Book;
-const Author = sequelize.models.Author;
+import { Author, Book } from "../db/index.js";
 
 const resolvers = {
   Date: DateResolver,
@@ -12,16 +9,17 @@ const resolvers = {
   },
 
   Mutation: {
-    createAuthor: async (_, args) => {
-      console.log(args);
+    createAuthor: async (_, { name, biography, bornDate }) => {
       const author = await Author.create({
-        ...args,
+        name,
+        biography,
+        bornDate,
       });
       return author;
     },
 
     createBook: async (_, { title, description, publishedDate, author }) => {
-      let existingAuthor;
+      let existingAuthor: Author;
 
       // If author ID is provided, fetch it
       if (author.id) {
@@ -53,8 +51,6 @@ const resolvers = {
       const bookWithAuthor = await Book.findByPk(book.id, {
         include: [{ model: Author, as: "author" }],
       });
-
-      console.log(bookWithAuthor.toJSON());
 
       return bookWithAuthor;
     },

@@ -1,9 +1,11 @@
 import "dotenv/config";
-import { readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path, { dirname } from "path";
 import { Sequelize } from "sequelize";
-
 import { fileURLToPath } from "url";
+
+import { initAuthor, Author } from "./models/author.js";
+import { initBook, Book } from "./models/book.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,20 +25,12 @@ const sequelize = new Sequelize(process.env.POSTGRES_URL, {
   },
 });
 
-const modelFiles = readdirSync(path.resolve(__dirname, "models"));
-await Promise.all(
-  modelFiles.map(async (file) => {
-    (await import(path.resolve(__dirname, "models", file))).default(sequelize);
-  })
-);
+initAuthor(sequelize);
+initBook(sequelize);
 
-Object.keys(sequelize.models).forEach((modelName) => {
-  const model = sequelize.models[modelName];
-  if (model.associate) {
-    model.associate(sequelize.models);
-  }
-});
+Author.hasMany(Book, { foreignKey: "author_id", as: "author" });
+Book.belongsTo(Author, { foreignKey: "author_id", as: "author" });
 
 await sequelize.sync();
 
-export default sequelize;
+export { sequelize, Author, Book };
