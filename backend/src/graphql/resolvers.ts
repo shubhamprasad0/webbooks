@@ -120,6 +120,17 @@ const resolvers = {
       return author;
     },
 
+    deleteAuthor: async (_, { id }) => {
+      const author = await Author.findByPk(id);
+
+      if (!author) {
+        throw new Error("Author not found");
+      }
+
+      await author.destroy();
+      return true;
+    },
+
     createBook: async (_, { title, description, publishedDate, author }) => {
       let existingAuthor: Author;
 

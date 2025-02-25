@@ -31,9 +31,17 @@ const sequelize = new Sequelize(process.env.POSTGRES_URL, {
 initAuthor(sequelize);
 initBook(sequelize);
 
-Author.hasMany(Book, { foreignKey: "author_id", as: "author" });
-Book.belongsTo(Author, { foreignKey: "author_id", as: "author" });
+Author.hasMany(Book, {
+  foreignKey: "author_id",
+  as: "author",
+  onDelete: "CASCADE",
+});
+Book.belongsTo(Author, {
+  foreignKey: "author_id",
+  as: "author",
+  onDelete: "CASCADE",
+});
 
-await sequelize.sync();
+await sequelize.sync({ alter: true });
 
 export { sequelize, Author, Book };
