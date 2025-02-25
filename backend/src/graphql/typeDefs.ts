@@ -23,6 +23,12 @@ type PaginatedBooks {
   last: ID
 }
 
+type PaginatedAuthors {
+  authors: [Author!]!
+  totalCount: Int!
+  last: ID
+}
+
 input AuthorInput {
   id: ID
   name: String
@@ -32,7 +38,7 @@ input AuthorInput {
 
 type Query {
   books(title: String, author: String, publishedBefore: Date, publishedAfter: Date, cursor: ID, limit: Int): PaginatedBooks!
-  authors(name: String, birthYear: Int, limit: Int, offset: Int): [Author!]!
+  authors(name: String, birthYear: Int, cursor: ID, limit: Int): PaginatedAuthors!
   book(id: ID!): Book!
   author(id: ID!): Author!
 }

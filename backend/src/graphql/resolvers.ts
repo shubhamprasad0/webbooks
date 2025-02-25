@@ -51,7 +51,36 @@ const resolvers = {
         last: books.length ? books[books.length - 1].id : null,
       };
     },
-    authors: async () => await Author.findAll(),
+    authors: async (_, { name, birthYear, cursor, limit = 10 }) => {
+      const whereClause = {};
+
+      if (name) {
+        whereClause["name"] = name;
+      }
+
+      if (birthYear) {
+        const start = `${birthYear}-01-01`;
+        const end = `${birthYear}-12-31`;
+
+        whereClause["bornDate"] = { [Op.gte]: start, [Op.lte]: end };
+      }
+
+      if (cursor) {
+        whereClause["id"] = { [Op.gt]: cursor };
+      }
+
+      const { rows: authors, count } = await Author.findAndCountAll({
+        where: whereClause,
+        limit,
+        order: [["id", "ASC"]],
+      });
+
+      return {
+        authors,
+        totalCount: count,
+        last: authors.length ? authors[authors.length - 1].id : null,
+      };
+    },
     book: async (_, { id }) => {
       const book = await Book.findByPk(id, {
         include: { model: Author, as: "author" },
