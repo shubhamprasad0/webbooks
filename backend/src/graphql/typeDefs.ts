@@ -17,6 +17,12 @@ type Book {
   author: Author!
 }
 
+type PaginatedBooks {
+  books: [Book!]!
+  totalCount: Int!
+  last: ID
+}
+
 input AuthorInput {
   id: ID
   name: String
@@ -25,8 +31,10 @@ input AuthorInput {
 }
 
 type Query {
-  books: [Book!]!
-  authors: [Author!]!
+  books(title: String, author: String, publishedBefore: Date, publishedAfter: Date, cursor: ID, limit: Int): PaginatedBooks!
+  authors(name: String, birthYear: Int, limit: Int, offset: Int): [Author!]!
+  book(id: ID!): Book!
+  author(id: ID!): Author!
 }
 
 type Mutation {
