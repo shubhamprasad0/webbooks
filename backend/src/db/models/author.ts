@@ -1,22 +1,20 @@
-import { DataTypes, Model, Sequelize, Optional } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 
-interface AuthorAttributes {
-  id: number;
-  name: string;
-  biography?: string;
-  bornDate?: Date;
-}
-
-interface AuthorCreationAttributes extends Optional<AuthorAttributes, "id"> {}
-
-export class Author
-  extends Model<AuthorAttributes, AuthorCreationAttributes>
-  implements AuthorAttributes
-{
-  public id!: number;
-  public name!: string;
-  public biography?: string;
-  public bornDate?: Date;
+export class Author extends Model<
+  InferAttributes<Author>,
+  InferCreationAttributes<Author>
+> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare biography: string;
+  declare bornDate: Date;
 }
 
 export function initAuthor(sequelize: Sequelize) {

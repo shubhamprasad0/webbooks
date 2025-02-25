@@ -1,23 +1,21 @@
-import { DataTypes, Model, Sequelize, Optional } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 
-interface BookAttributes {
-  id: number;
-  title: string;
-  description?: string;
-  publishedDate: Date;
-  authorId: number; // Explicitly define this field
-}
-
-interface BookCreationAttributes extends Optional<BookAttributes, "id"> {}
-export class Book
-  extends Model<BookAttributes, BookCreationAttributes>
-  implements BookAttributes
-{
-  public id!: number;
-  public title!: string;
-  public description?: string;
-  public publishedDate!: Date;
-  public authorId!: number;
+export class Book extends Model<
+  InferAttributes<Book>,
+  InferCreationAttributes<Book>
+> {
+  declare id: CreationOptional<number>;
+  declare title: string;
+  declare description: string;
+  declare publishedDate: Date;
+  declare authorId: number;
 }
 
 export function initBook(sequelize: Sequelize) {
