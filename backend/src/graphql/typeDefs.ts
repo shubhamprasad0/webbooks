@@ -49,6 +49,7 @@ type Mutation {
   deleteAuthor(id: ID!): Boolean!
   createBook(title: String!, description: String, publishedDate: Date!, author: AuthorInput!): Book!
   updateBook(id: ID!, title: String, description: String, publishedDate: Date, authorId: ID): Book!
+  deleteBook(id: ID!): Boolean!
 }
 `;
 

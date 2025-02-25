@@ -127,7 +127,13 @@ const resolvers = {
         throw new Error("Author not found");
       }
 
-      await author.destroy();
+      try {
+        await author.destroy();
+      } catch (err) {
+        console.error("Failed to delete author ", err);
+        return false;
+      }
+
       return true;
     },
 
@@ -198,6 +204,22 @@ const resolvers = {
       }
 
       return book;
+    },
+
+    deleteBook: async (_, { id }) => {
+      const book = await Book.findByPk(id);
+      if (!book) {
+        throw new Error("Book not found");
+      }
+
+      try {
+        await book.destroy();
+      } catch (err) {
+        console.error("Failed to delete book: ", err);
+        return false;
+      }
+
+      return true;
     },
   },
 };
