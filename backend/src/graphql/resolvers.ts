@@ -109,6 +109,17 @@ const resolvers = {
       return author;
     },
 
+    updateAuthor: async (_, { id, name, biography, bornDate }) => {
+      const author = await Author.findByPk(id);
+
+      if (!author) {
+        throw new Error("Author not found");
+      }
+
+      await author.update({ name, biography, bornDate });
+      return author;
+    },
+
     createBook: async (_, { title, description, publishedDate, author }) => {
       let existingAuthor: Author;
 

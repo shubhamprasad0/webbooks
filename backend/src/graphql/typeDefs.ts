@@ -45,6 +45,7 @@ type Query {
 
 type Mutation {
   createAuthor(name: String!, biography: String, bornDate: Date): Author!
+  updateAuthor(id: ID!, name: String, biography: String, bornDate: Date): Author!
   createBook(title: String!, description: String, publishedDate: Date!, author: AuthorInput!): Book!
 }
 `;
