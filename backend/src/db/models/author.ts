@@ -1,6 +1,18 @@
-import { DataTypes, Model, Sequelize } from "sequelize";
+import { DataTypes, Model, Sequelize, Optional } from "sequelize";
 
-export class Author extends Model {
+interface AuthorAttributes {
+  id: number;
+  name: string;
+  biography?: string;
+  bornDate?: Date;
+}
+
+interface AuthorCreationAttributes extends Optional<AuthorAttributes, "id"> {}
+
+export class Author
+  extends Model<AuthorAttributes, AuthorCreationAttributes>
+  implements AuthorAttributes
+{
   public id!: number;
   public name!: string;
   public biography?: string;

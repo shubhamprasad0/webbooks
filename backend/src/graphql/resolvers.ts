@@ -157,7 +157,7 @@ const resolvers = {
         title,
         description,
         publishedDate,
-        author_id: existingAuthor.id,
+        authorId: existingAuthor.id,
       });
 
       // Fetch the book again with the associated author
@@ -166,6 +166,38 @@ const resolvers = {
       });
 
       return bookWithAuthor;
+    },
+
+    updateBook: async (
+      _,
+      { id, title, description, publishedDate, authorId }
+    ) => {
+      const book = await Book.findByPk(id, {
+        include: { model: Author, as: "author" },
+      });
+      if (!book) {
+        throw new Error("Book not found");
+      }
+
+      if (authorId) {
+        const author = await Author.findByPk(id);
+        if (!author) {
+          throw new Error("Author not found");
+        }
+      }
+
+      await book.update({
+        title,
+        description,
+        publishedDate,
+        authorId,
+      });
+
+      if (authorId) {
+        await book.reload(); // to refresh the author details inside book
+      }
+
+      return book;
     },
   },
 };
