@@ -4,9 +4,7 @@
   "main": "src/index.js",
   "scripts": {
     "compile": "tsc",
-    "clean": "rimraf dist/",
-    "copy-files": "copyfiles -u 1 src/config/certs/*.pem  dist/",
-    "start": "npm run clean && npm run compile && npm run copy-files && node ./dist/index.js"
+    "start": "npm run compile && node ./dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +22,6 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
-    "copyfiles": "^2.4.1",
-    "rimraf": "^6.0.1",
     "typescript": "^5.7.3"
   }
 }

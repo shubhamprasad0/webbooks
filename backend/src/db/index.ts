@@ -17,14 +17,7 @@ const rdsCa = readFileSync(
 const sequelize = new Sequelize(process.env.POSTGRES_URL, {
   dialect: "postgres",
   dialectOptions: {
-    ssl:
-      process.env.NODE_ENV === "production"
-        ? {
-            require: true,
-            rejectUnauthorized: true,
-            ca: [rdsCa],
-          }
-        : null,
+    ssl: process.env.NODE_ENV === "production",
   },
 });
 
