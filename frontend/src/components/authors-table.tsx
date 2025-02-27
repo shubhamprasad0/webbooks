@@ -30,7 +30,7 @@ const AuthorsTable = () => {
   const { loading, error, data, fetchMore } = useQuery(GET_AUTHORS, {
     notifyOnNetworkStatusChange: true,
     variables: {
-      limit: 10,
+      limit: 5,
       cursor: 0,
     },
   });
