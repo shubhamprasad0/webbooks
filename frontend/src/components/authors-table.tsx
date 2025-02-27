@@ -8,11 +8,33 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import NoAuthors from "./no-authors";
+import { gql, useQuery } from "@apollo/client";
 
-const AuthorsTable = ({ authors }: { authors: Author[] }) => {
+export const GET_AUTHORS = gql`
+  query GetAuthors {
+    authors {
+      authors {
+        id
+        name
+        biography
+        bornDate
+      }
+    }
+  }
+`;
+const AuthorsTable = () => {
   const router = useRouter();
+  const { loading, error, data } = useQuery(GET_AUTHORS);
 
-  if (authors.length === 0) {
+  if (loading) {
+    return `Loading...`;
+  }
+
+  if (error) {
+    return `Error ${error.message}`;
+  }
+
+  if (data.authors.authors.length === 0) {
     return <NoAuthors />;
   }
 
@@ -26,10 +48,10 @@ const AuthorsTable = ({ authors }: { authors: Author[] }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {authors.map((author, i) => (
+        {data.authors.authors.map((author: Author) => (
           <TableRow
             className="hover:cursor-pointer"
-            key={i}
+            key={author.id}
             onClick={() => {
               router.push(`/authors/${author.id}`);
             }}

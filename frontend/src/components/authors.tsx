@@ -40,7 +40,7 @@ const Authors = () => {
         <CardDescription>Manage your books and their authors.</CardDescription>
       </CardHeader>
       <CardContent>
-        <AuthorsTable authors={data.authors.authors} />
+        <AuthorsTable />
       </CardContent>
     </Card>
   );

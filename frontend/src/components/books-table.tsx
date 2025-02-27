@@ -8,11 +8,40 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import NoBooks from "./no-books";
+import { gql, useQuery } from "@apollo/client";
 
-const BooksTable = ({ books }: { books: Book[] }) => {
+const GET_BOOKS = gql`
+  query GetBooks {
+    books {
+      books {
+        id
+        title
+        publishedDate
+        description
+        author {
+          name
+        }
+      }
+    }
+  }
+`;
+
+const BooksTable = () => {
   const router = useRouter();
 
-  if (books.length === 0) {
+  const { loading, error, data } = useQuery(GET_BOOKS, {
+    notifyOnNetworkStatusChange: true,
+  });
+
+  if (loading) {
+    return `Loading...`;
+  }
+
+  if (error) {
+    return `Error ${error.message}`;
+  }
+
+  if (data.books.books.length === 0) {
     return <NoBooks />;
   }
 
@@ -27,10 +56,10 @@ const BooksTable = ({ books }: { books: Book[] }) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {books.map((book, i) => (
+        {data.books.books.map((book: Book) => (
           <TableRow
             className="hover:cursor-pointer"
-            key={i}
+            key={book.id}
             onClick={() => {
               router.push(`/books/${book.id}`);
             }}
