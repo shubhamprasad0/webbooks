@@ -6,23 +6,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import NoPolls from "./no-books";
 import { useRouter } from "next/navigation";
+import NoBooks from "./no-books";
 
 const BooksTable = ({ books }: { books: Book[] }) => {
   const router = useRouter();
 
   if (books.length === 0) {
-    return <NoPolls />;
+    return <NoBooks />;
   }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead className="text-center">Title</TableHead>
-          <TableHead className="hidden md:table-cell">Author</TableHead>
+          <TableHead>Title</TableHead>
+          <TableHead className="text-center">Author</TableHead>
+          <TableHead className="hidden md:table-cell">Publish Date</TableHead>
+          <TableHead className="hidden lg:table-cell">Description</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -34,10 +35,13 @@ const BooksTable = ({ books }: { books: Book[] }) => {
               router.push(`/books/${book.id}`);
             }}
           >
-            <TableCell className="font-medium">{book.id}</TableCell>
-            <TableCell className="text-center">{book.title}</TableCell>
+            <TableCell className="font-medium">{book.title}</TableCell>
+            <TableCell className="text-center">{book.author.name}</TableCell>
             <TableCell className="hidden md:table-cell">
-              {book.author.name}
+              {book.publishedDate}
+            </TableCell>
+            <TableCell className="hidden lg:table-cell">
+              {book.description}
             </TableCell>
           </TableRow>
         ))}

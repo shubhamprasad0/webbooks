@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,14 +28,37 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import { Spinner } from "./ui/spinner";
-import useCreateBook from "@/hooks/use-create-book";
-import useFetchAuthors from "@/hooks/use-fetch-authors";
-import useFetchBooks from "@/hooks/use-fetch-books";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { GET_AUTHORS } from "./authors";
+
+const CREATE_BOOK = gql`
+  mutation CreateBook(
+    $title: String!
+    $description: String
+    $publishedDate: Date!
+    $author: AuthorInput!
+  ) {
+    createBook(
+      title: $title
+      description: $description
+      publishedDate: $publishedDate
+      author: $author
+    ) {
+      id
+      title
+      description
+      publishedDate
+      author {
+        id
+        name
+        biography
+        bornDate
+      }
+    }
+  }
+`;
 
 const CreateBookDialog = () => {
-  const { authors, setAuthors } = useFetchAuthors();
-  const { setBooks } = useFetchBooks();
-  const { createBook: createBookMutation } = useCreateBook();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [publishDate, setPublishDate] = useState<Date | undefined>(new Date());
@@ -49,9 +72,12 @@ const CreateBookDialog = () => {
     new Date()
   );
 
-  useEffect(() => {
-    setAuthors(authors);
-  }, [authors, setAuthors]);
+  const [createBookMutation] = useMutation(CREATE_BOOK);
+  const {
+    data: authorData,
+    loading: loadingAuthors,
+    error: errorAuthors,
+  } = useQuery(GET_AUTHORS);
 
   const reset = () => {
     setTitle("");
@@ -77,25 +103,21 @@ const CreateBookDialog = () => {
         bornDate: format(authorBornDate!, "yyyy-MM-dd"),
       };
     }
-    const res = await createBookMutation({
+    await createBookMutation({
       variables: {
         title,
         description,
         publishedDate: format(publishDate!, "yyyy-MM-dd"),
         author,
       },
+      refetchQueries: ["GetBooks", "GetAuthors"],
     });
-    setBooks((prev) => {
-      return [...prev, res.data.createBook];
-    });
-    if (!selectedAuthor) {
-      setAuthors((prev) => {
-        return [...prev, res.data.createBook.author];
-      });
-    }
     reset();
     setDialogOpen(false);
   };
+
+  if (loadingAuthors) return "Loading...";
+  if (errorAuthors) return `Error ${errorAuthors}`;
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -178,7 +200,7 @@ const CreateBookDialog = () => {
                 <SelectValue placeholder="Select author" />
               </SelectTrigger>
               <SelectContent>
-                {authors.map((author) => (
+                {authorData.authors.authors.map((author: Author) => (
                   <SelectItem key={author.id} value={`${author.id}`}>
                     {author.name}
                   </SelectItem>

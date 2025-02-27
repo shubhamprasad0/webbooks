@@ -17,8 +17,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import useFetchAuthors from "@/hooks/use-fetch-authors";
+import { CalendarIcon, PlusCircle } from "lucide-react";
 
 const CREATE_AUTHOR = gql`
   mutation CreateAuthor($name: String!, $biography: String, $bornDate: Date) {
@@ -32,7 +31,6 @@ const CREATE_AUTHOR = gql`
 `;
 
 export default function CreateAuthorDialog() {
-  const { setAuthors } = useFetchAuthors();
   const [name, setName] = useState("");
   const [biography, setBiography] = useState("");
   const [bornDate, setBornDate] = useState<Date | undefined>(new Date());
@@ -47,16 +45,13 @@ export default function CreateAuthorDialog() {
     }
 
     try {
-      const res = await createAuthor({
+      await createAuthor({
         variables: {
           name,
           biography,
           bornDate: format(bornDate, "yyyy-MM-dd"),
         },
-      });
-
-      setAuthors((prev) => {
-        return [...prev, res.data.createAuthor];
+        refetchQueries: ["GetAuthors"],
       });
 
       setName("");
@@ -71,7 +66,12 @@ export default function CreateAuthorDialog() {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button>Create Author</Button>
+        <Button size="sm" className="h-8 gap-1">
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+            Create Author
+          </span>
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

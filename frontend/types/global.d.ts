@@ -1,12 +1,12 @@
 interface Author {
-  id: number;
+  id: string;
   name: string;
   biography: string;
   bornDate: string;
 }
 
 interface Book {
-  id: number;
+  id: string;
   title: string;
   description: string;
   publishedDate: string;
