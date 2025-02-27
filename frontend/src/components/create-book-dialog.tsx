@@ -28,16 +28,20 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import { Spinner } from "./ui/spinner";
-import useFetchAuthors from "@/hooks/use-fetch-authors";
 import useCreateBook from "@/hooks/use-create-book";
+import useBooksContext from "@/hooks/use-books-context";
+import useAuthorsContext from "@/hooks/use-authors-context";
+import useFetchAuthors from "@/hooks/use-fetch-authors";
 
 export function CreateBookDialog() {
   const { authors } = useFetchAuthors();
+  const { books, setBooks } = useBooksContext();
+  const { authors: authorsContext, setAuthors } = useAuthorsContext();
   const { createBook: createBookMutation } = useCreateBook();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [publishDate, setPublishDate] = useState<Date | undefined>(new Date());
-  const [selectedAuthor, setSelectedAuthor] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState(0);
   const [creatingBook, setCreatingBook] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [creatingAuthor, setCreatingAuthor] = useState(false);
@@ -51,7 +55,7 @@ export function CreateBookDialog() {
     setTitle("");
     setDescription("");
     setPublishDate(new Date());
-    setSelectedAuthor("");
+    setSelectedAuthor(0);
     setCreatingAuthor(false);
     setAuthorName("");
     setAuthorBio("");
@@ -61,21 +65,30 @@ export function CreateBookDialog() {
 
   const createBook = async () => {
     setCreatingBook(true);
-    await createBookMutation({
+    let author = {};
+    if (selectedAuthor) {
+      author = { id: selectedAuthor };
+    } else {
+      author = {
+        name: authorName,
+        biography: authorBio,
+        bornDate: format(authorBornDate!, "yyyy-MM-dd"),
+      };
+    }
+    const res = await createBookMutation({
       variables: {
         title,
         description,
         publishedDate: format(publishDate!, "yyyy-MM-dd"),
-        author: {
-          name: authorName,
-          biography: authorBio,
-          bornDate: format(authorBornDate!, "yyyy-MM-dd"),
-        },
+        author,
       },
     });
+    setBooks([...books, res.data.createBook]);
+    if (!selectedAuthor) {
+      setAuthors([...authorsContext, res.data.createBook.author]);
+    }
     reset();
     setDialogOpen(false);
-    setCreatingBook(false);
   };
 
   return (
@@ -150,7 +163,9 @@ export function CreateBookDialog() {
             <Label className="text-right">Author</Label>
             <Select
               onValueChange={(val) =>
-                val === "new" ? setCreatingAuthor(true) : setSelectedAuthor(val)
+                val === "new"
+                  ? setCreatingAuthor(true)
+                  : setSelectedAuthor(+val)
               }
             >
               <SelectTrigger className="col-span-7">
