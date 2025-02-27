@@ -23,12 +23,13 @@ const useFetchAuthors = () => {
     if (!loading && !error) {
       setAuthors(data.authors.authors);
     }
-  }, [loading, error, data, setAuthors]);
+  }, [data, loading, error, setAuthors]);
 
   return {
     loading,
     error,
     authors,
+    setAuthors,
   };
 };
 

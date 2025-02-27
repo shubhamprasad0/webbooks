@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,14 +29,12 @@ import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import { Spinner } from "./ui/spinner";
 import useCreateBook from "@/hooks/use-create-book";
-import useBooksContext from "@/hooks/use-books-context";
-import useAuthorsContext from "@/hooks/use-authors-context";
 import useFetchAuthors from "@/hooks/use-fetch-authors";
+import useFetchBooks from "@/hooks/use-fetch-books";
 
-export function CreateBookDialog() {
-  const { authors } = useFetchAuthors();
-  const { books, setBooks } = useBooksContext();
-  const { authors: authorsContext, setAuthors } = useAuthorsContext();
+const CreateBookDialog = () => {
+  const { authors, setAuthors } = useFetchAuthors();
+  const { setBooks } = useFetchBooks();
   const { createBook: createBookMutation } = useCreateBook();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -50,6 +48,10 @@ export function CreateBookDialog() {
   const [authorBornDate, setAuthorBornDate] = useState<Date | undefined>(
     new Date()
   );
+
+  useEffect(() => {
+    setAuthors(authors);
+  }, [authors, setAuthors]);
 
   const reset = () => {
     setTitle("");
@@ -83,9 +85,13 @@ export function CreateBookDialog() {
         author,
       },
     });
-    setBooks([...books, res.data.createBook]);
+    setBooks((prev) => {
+      return [...prev, res.data.createBook];
+    });
     if (!selectedAuthor) {
-      setAuthors([...authorsContext, res.data.createBook.author]);
+      setAuthors((prev) => {
+        return [...prev, res.data.createBook.author];
+      });
     }
     reset();
     setDialogOpen(false);
@@ -255,4 +261,6 @@ export function CreateBookDialog() {
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default CreateBookDialog;

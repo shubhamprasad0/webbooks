@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateAuthorDialog } from "./create-author-dialog";
+import CreateAuthorDialog from "./create-author-dialog";
 
 export default function NoAuthors() {
   return (

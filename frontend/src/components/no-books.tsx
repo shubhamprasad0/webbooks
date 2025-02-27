@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateBookDialog } from "./create-book-dialog";
+import CreateBookDialog from "./create-book-dialog";
 
 export default function NoBooks() {
   return (
