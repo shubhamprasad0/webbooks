@@ -1,7 +1,7 @@
 "use client";
 
-import Books from "@/components/books";
+import TabView from "@/components/tab-view";
 
 export default function App() {
-  return <Books />;
+  return <TabView />;
 }

@@ -6,11 +6,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import BooksTable from "@/components/books-table";
-import useFetchBooks from "@/hooks/use-fetch-books";
+import useFetchAuthors from "@/hooks/use-fetch-authors";
+import AuthorsTable from "./authors-table";
 
-const Books = () => {
-  const { loading, error, books } = useFetchBooks();
+const Authors = () => {
+  const { loading, error, authors } = useFetchAuthors();
 
   if (loading) {
     return `Loading...`;
@@ -23,14 +23,14 @@ const Books = () => {
   return (
     <Card x-chunk="dashboard-06-chunk-0">
       <CardHeader>
-        <CardTitle>Books</CardTitle>
+        <CardTitle>Authors</CardTitle>
         <CardDescription>Manage your books and their authors.</CardDescription>
       </CardHeader>
       <CardContent>
-        <BooksTable books={books} />
+        <AuthorsTable authors={authors} />
       </CardContent>
     </Card>
   );
 };
 
-export default Books;
+export default Authors;
