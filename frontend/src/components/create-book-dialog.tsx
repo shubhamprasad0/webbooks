@@ -29,7 +29,7 @@ import { format } from "date-fns";
 import { CalendarIcon, PlusCircle } from "lucide-react";
 import { Spinner } from "./ui/spinner";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { GET_AUTHORS } from "./authors";
+import { GET_AUTHORS } from "./authors-table";
 
 const CREATE_BOOK = gql`
   mutation CreateBook(
