@@ -77,7 +77,11 @@ const CreateBookDialog = () => {
     data: authorData,
     loading: loadingAuthors,
     error: errorAuthors,
-  } = useQuery(GET_AUTHORS);
+  } = useQuery(GET_AUTHORS, {
+    variables: {
+      limit: 100,
+    },
+  });
 
   const reset = () => {
     setTitle("");
