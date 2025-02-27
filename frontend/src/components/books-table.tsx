@@ -9,10 +9,11 @@ import {
 import { useRouter } from "next/navigation";
 import NoBooks from "./no-books";
 import { gql, useQuery } from "@apollo/client";
+import { Button } from "./ui/button";
 
 const GET_BOOKS = gql`
-  query GetBooks {
-    books {
+  query GetBooks($limit: Int, $cursor: ID) {
+    books(limit: $limit, cursor: $cursor) {
       books {
         id
         title
@@ -22,6 +23,8 @@ const GET_BOOKS = gql`
           name
         }
       }
+      last
+      totalCount
     }
   }
 `;
@@ -29,8 +32,12 @@ const GET_BOOKS = gql`
 const BooksTable = () => {
   const router = useRouter();
 
-  const { loading, error, data } = useQuery(GET_BOOKS, {
+  const { loading, error, data, fetchMore } = useQuery(GET_BOOKS, {
     notifyOnNetworkStatusChange: true,
+    variables: {
+      limit: 10,
+      cursor: 0,
+    },
   });
 
   if (loading) {
@@ -45,37 +52,54 @@ const BooksTable = () => {
     return <NoBooks />;
   }
 
+  const loadMore = () => {
+    fetchMore({
+      variables: {
+        cursor: data.books.last,
+      },
+    });
+  };
+
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Title</TableHead>
-          <TableHead className="text-center">Author</TableHead>
-          <TableHead className="hidden md:table-cell">Publish Date</TableHead>
-          <TableHead className="hidden lg:table-cell">Description</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.books.books.map((book: Book) => (
-          <TableRow
-            className="hover:cursor-pointer"
-            key={book.id}
-            onClick={() => {
-              router.push(`/books/${book.id}`);
-            }}
-          >
-            <TableCell className="font-medium">{book.title}</TableCell>
-            <TableCell className="text-center">{book.author.name}</TableCell>
-            <TableCell className="hidden md:table-cell">
-              {book.publishedDate}
-            </TableCell>
-            <TableCell className="hidden lg:table-cell">
-              {book.description}
-            </TableCell>
+    <div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Title</TableHead>
+            <TableHead className="text-center">Author</TableHead>
+            <TableHead className="hidden md:table-cell">Publish Date</TableHead>
+            <TableHead className="hidden lg:table-cell">Description</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {data.books.books.map((book: Book) => (
+            <TableRow
+              className="hover:cursor-pointer"
+              key={book.id}
+              onClick={() => {
+                router.push(`/books/${book.id}`);
+              }}
+            >
+              <TableCell className="font-medium">{book.title}</TableCell>
+              <TableCell className="text-center">{book.author.name}</TableCell>
+              <TableCell className="hidden md:table-cell">
+                {book.publishedDate}
+              </TableCell>
+              <TableCell className="hidden lg:table-cell">
+                {book.description}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="flex justify-center mt-4">
+        {data.books.books.length < data.books.totalCount && (
+          <Button onClick={loadMore} disabled={loading}>
+            {loading ? "Loading..." : "Load More"}
+          </Button>
+        )}
+      </div>
+    </div>
   );
 };
 
