@@ -35,7 +35,7 @@ const BooksTable = () => {
   const { loading, error, data, fetchMore } = useQuery(GET_BOOKS, {
     notifyOnNetworkStatusChange: true,
     variables: {
-      limit: 10,
+      limit: 5,
       cursor: 0,
     },
   });
