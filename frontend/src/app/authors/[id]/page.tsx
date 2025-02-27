@@ -15,7 +15,7 @@ import {
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 
-export const GET_AUTHOR = gql`
+const GET_AUTHOR = gql`
   query GetAuthor($id: ID!) {
     author(id: $id) {
       id
@@ -26,7 +26,7 @@ export const GET_AUTHOR = gql`
   }
 `;
 
-export const UPDATE_AUTHOR = gql`
+const UPDATE_AUTHOR = gql`
   mutation UpdateAuthor(
     $id: ID!
     $name: String
@@ -47,7 +47,7 @@ export const UPDATE_AUTHOR = gql`
   }
 `;
 
-export const DELETE_AUTHOR = gql`
+const DELETE_AUTHOR = gql`
   mutation DeleteAuthor($id: ID!) {
     deleteAuthor(id: $id)
   }
