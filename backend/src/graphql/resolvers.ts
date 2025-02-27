@@ -186,7 +186,7 @@ const resolvers = {
       }
 
       if (authorId) {
-        const author = await Author.findByPk(id);
+        const author = await Author.findByPk(authorId);
         if (!author) {
           throw new Error("Author not found");
         }

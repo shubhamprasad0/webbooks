@@ -6,11 +6,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import useFetchAuthors from "@/hooks/use-fetch-authors";
 import AuthorsTable from "./authors-table";
+import { gql, useQuery } from "@apollo/client";
+
+export const GET_AUTHORS = gql`
+  query GetAuthors {
+    authors {
+      authors {
+        id
+        name
+        biography
+        bornDate
+      }
+    }
+  }
+`;
 
 const Authors = () => {
-  const { loading, error, authors } = useFetchAuthors();
+  const { loading, error, data } = useQuery(GET_AUTHORS);
 
   if (loading) {
     return `Loading...`;
@@ -27,7 +40,7 @@ const Authors = () => {
         <CardDescription>Manage your books and their authors.</CardDescription>
       </CardHeader>
       <CardContent>
-        <AuthorsTable authors={authors} />
+        <AuthorsTable authors={data.authors.authors} />
       </CardContent>
     </Card>
   );

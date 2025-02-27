@@ -7,10 +7,28 @@ import {
 } from "@/components/ui/card";
 
 import BooksTable from "@/components/books-table";
-import useFetchBooks from "@/hooks/use-fetch-books";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_BOOKS = gql`
+  query GetBooks {
+    books {
+      books {
+        id
+        title
+        publishedDate
+        description
+        author {
+          name
+        }
+      }
+    }
+  }
+`;
 
 const Books = () => {
-  const { loading, error, books } = useFetchBooks();
+  const { loading, error, data } = useQuery(GET_BOOKS, {
+    notifyOnNetworkStatusChange: true,
+  });
 
   if (loading) {
     return `Loading...`;
@@ -27,7 +45,7 @@ const Books = () => {
         <CardDescription>Manage your books and their authors.</CardDescription>
       </CardHeader>
       <CardContent>
-        <BooksTable books={books} />
+        <BooksTable books={data.books.books} />
       </CardContent>
     </Card>
   );

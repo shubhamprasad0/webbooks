@@ -6,23 +6,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import NoPolls from "./no-books";
 import { useRouter } from "next/navigation";
+import NoAuthors from "./no-authors";
 
 const AuthorsTable = ({ authors }: { authors: Author[] }) => {
   const router = useRouter();
 
   if (authors.length === 0) {
-    return <NoPolls />;
+    return <NoAuthors />;
   }
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead className="text-center">Name</TableHead>
-          <TableHead className="hidden md:table-cell">Birthday</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Birthday</TableHead>
+          <TableHead className="hidden lg:table-cell">Biography</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -34,10 +34,10 @@ const AuthorsTable = ({ authors }: { authors: Author[] }) => {
               router.push(`/authors/${author.id}`);
             }}
           >
-            <TableCell className="font-medium">{author.id}</TableCell>
-            <TableCell className="text-center">{author.name}</TableCell>
-            <TableCell className="hidden md:table-cell">
-              {author.bornDate}
+            <TableCell className="font-medium">{author.name}</TableCell>
+            <TableCell>{author.bornDate}</TableCell>
+            <TableCell className="hidden lg:table-cell">
+              {author.biography}
             </TableCell>
           </TableRow>
         ))}

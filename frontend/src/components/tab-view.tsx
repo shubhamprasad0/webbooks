@@ -6,9 +6,12 @@ import CreateAuthorDialog from "./create-author-dialog";
 import { useState } from "react";
 import Books from "./books";
 import Authors from "./authors";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const TabView = () => {
-  const [tab, setTab] = useState("books");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [tab, setTab] = useState(searchParams.get("tab") || "books");
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -17,10 +20,22 @@ const TabView = () => {
           <Tabs defaultValue={tab}>
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="books" onClick={() => setTab("books")}>
+                <TabsTrigger
+                  value="books"
+                  onClick={() => {
+                    setTab("books");
+                    router.push("/?tab=books");
+                  }}
+                >
                   Books
                 </TabsTrigger>
-                <TabsTrigger value="authors" onClick={() => setTab("authors")}>
+                <TabsTrigger
+                  value="authors"
+                  onClick={() => {
+                    setTab("authors");
+                    router.push("/?tab=authors");
+                  }}
+                >
                   Authors
                 </TabsTrigger>
               </TabsList>
