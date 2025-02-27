@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 
-export const GET_BOOK = gql`
+const GET_BOOK = gql`
   query GetBook($id: ID!) {
     book(id: $id) {
       id
@@ -44,7 +44,7 @@ export const GET_BOOK = gql`
   }
 `;
 
-export const UPDATE_BOOK = gql`
+const UPDATE_BOOK = gql`
   mutation UpdateBook(
     $id: ID!
     $title: String
@@ -71,7 +71,7 @@ export const UPDATE_BOOK = gql`
   }
 `;
 
-export const DELETE_BOOK = gql`
+const DELETE_BOOK = gql`
   mutation DeleteBook($id: ID!) {
     deleteBook(id: $id)
   }
