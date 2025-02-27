@@ -29,7 +29,7 @@ const AuthorsTable = () => {
   const router = useRouter();
   const { loading, error, data, fetchMore } = useQuery(GET_AUTHORS, {
     variables: {
-      limit: 5,
+      limit: 10,
       cursor: 0,
     },
   });

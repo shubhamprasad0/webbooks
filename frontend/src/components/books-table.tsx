@@ -34,7 +34,7 @@ const BooksTable = () => {
 
   const { loading, error, data, fetchMore } = useQuery(GET_BOOKS, {
     variables: {
-      limit: 5,
+      limit: 10,
       cursor: 0,
     },
   });
