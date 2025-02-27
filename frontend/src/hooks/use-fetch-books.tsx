@@ -30,6 +30,7 @@ const useFetchBooks = () => {
     loading,
     error,
     books,
+    setBooks,
   };
 };
 

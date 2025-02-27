@@ -1,8 +1,8 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateBookDialog } from "@/components/create-book-dialog";
-import { CreateAuthorDialog } from "./create-author-dialog";
+import CreateBookDialog from "@/components/create-book-dialog";
+import CreateAuthorDialog from "./create-author-dialog";
 import { useState } from "react";
 import Books from "./books";
 import Authors from "./authors";

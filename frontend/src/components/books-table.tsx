@@ -31,7 +31,7 @@ const BooksTable = ({ books }: { books: Book[] }) => {
             className="hover:cursor-pointer"
             key={i}
             onClick={() => {
-              router.push(`/polls/${book.id}`);
+              router.push(`/books/${book.id}`);
             }}
           >
             <TableCell className="font-medium">{book.id}</TableCell>
