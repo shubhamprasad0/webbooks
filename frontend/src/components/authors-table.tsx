@@ -28,7 +28,6 @@ export const GET_AUTHORS = gql`
 const AuthorsTable = () => {
   const router = useRouter();
   const { loading, error, data, fetchMore } = useQuery(GET_AUTHORS, {
-    notifyOnNetworkStatusChange: true,
     variables: {
       limit: 5,
       cursor: 0,
