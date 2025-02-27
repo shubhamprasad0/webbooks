@@ -1,10 +1,10 @@
 import { gql, useQuery } from "@apollo/client";
+import useBooksContext from "./use-books-context";
+import { useEffect } from "react";
 
 const GET_BOOKS = gql`
   query GetBooks {
     books {
-      totalCount
-      last
       books {
         id
         title
@@ -17,13 +17,19 @@ const GET_BOOKS = gql`
 `;
 
 const useFetchBooks = () => {
+  const { books, setBooks } = useBooksContext();
   const { loading, error, data } = useQuery(GET_BOOKS);
+
+  useEffect(() => {
+    if (!loading && !error) {
+      setBooks(data.books.books);
+    }
+  }, [data, setBooks, loading, error]);
+
   return {
     loading,
     error,
-    books: !loading && !error ? data.books.books : [],
-    totalCount: !loading && !error ? data.books.totalCount : 0,
-    last: !loading && !error ? data.books.last : 0,
+    books,
   };
 };
 

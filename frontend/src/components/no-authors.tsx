@@ -1,6 +1,6 @@
 "use client";
 
-import { CreateBookDialog } from "./create-book-dialog";
+import { CreateAuthorDialog } from "./create-author-dialog";
 
 export default function NoAuthors() {
   return (
@@ -10,7 +10,7 @@ export default function NoAuthors() {
           You have no authors
         </h3>
         <div className="mb-48">
-          <CreateBookDialog />
+          <CreateAuthorDialog />
         </div>
       </div>
     </div>

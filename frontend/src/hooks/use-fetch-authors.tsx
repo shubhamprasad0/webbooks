@@ -1,10 +1,10 @@
 import { gql, useQuery } from "@apollo/client";
+import useAuthorsContext from "./use-authors-context";
+import { useEffect } from "react";
 
 const GET_AUTHORS = gql`
   query GetAuthors {
     authors {
-      totalCount
-      last
       authors {
         id
         name
@@ -16,13 +16,19 @@ const GET_AUTHORS = gql`
 `;
 
 const useFetchAuthors = () => {
+  const { authors, setAuthors } = useAuthorsContext();
   const { loading, error, data } = useQuery(GET_AUTHORS);
+
+  useEffect(() => {
+    if (!loading && !error) {
+      setAuthors(data.authors.authors);
+    }
+  }, [loading, error, data, setAuthors]);
+
   return {
     loading,
     error,
-    authors: !loading && !error ? data.authors.authors : [],
-    totalCount: !loading && !error ? data.authors.totalCount : 0,
-    last: !loading && !error ? data.authors.last : 0,
+    authors,
   };
 };
 
